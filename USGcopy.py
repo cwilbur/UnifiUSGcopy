@@ -42,10 +42,8 @@ if RUNNING_ON.lower() == "usg":
     sftpClient.put(os.path.realpath(os.path.dirname(__file__)) + USGFILE, CONTROLLERFILE)
     log.info("File copied to controller")
 elif RUNNING_ON.lower() == "controller":
-    stdin, stdout, stderr = ssh.exec_command("mca-ctrl -t dump-cfg > config.gateway.json")
-    print stdout.readlines()
-
-    sftpClient.get(USGFILE, CONTROLLERFILE)
+    stdin, stdout, stderr = ssh.exec_command("mca-ctrl -t dump-cfg > ~/config.gateway.json")
+    sftpClient.get("~" + USGFILE, CONTROLLERFILE)
     log.info("File copied from usg")
 else:
     raise Exception("RUNNING_ON variable is not set to USG or Controller")
