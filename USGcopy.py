@@ -12,7 +12,7 @@ PASSWORD = "testtest"
 SSHPORT = 22
 RUNNING_ON = "USG"
 CONTROLLERFILE = "/var/lib/unifi/sites/default/config.gateway.json"
-USGFILE = "/config.gateway.json"
+USGFILE = "config.gateway.json"
 
 # Do not change anything beyond this line, unless you know what you are doing
 print ("-----------------------------------------")
@@ -26,24 +26,17 @@ log = logging.getLogger("USGcopy")
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 ssh.connect(HOST, SSHPORT, username=USERNAME, password=PASSWORD)
-
-# socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# socket.connect((HOST, SSHPORT))
-# trans = paramiko.Transport(socket)
-# trans.connect(username=USERNAME, password=PASSWORD)
-
-# sftpClient = paramiko.SFTPClient.from_transport(trans)
 sftpClient = ssh.open_sftp()
 
 if RUNNING_ON.lower() == "usg":
     myConfig = check_output(["mca-ctrl", "-t dump-cfg"])
     # DEBUG myConfig = check_output(["cat", "config.gateway.json"])
 
-    sftpClient.put(os.path.realpath(os.path.dirname(__file__)) + USGFILE, CONTROLLERFILE)
+    sftpClient.put(os.path.realpath(os.path.dirname(__file__)) + "/" + USGFILE, CONTROLLERFILE)
     log.info("File copied to controller")
 elif RUNNING_ON.lower() == "controller":
-    stdin, stdout, stderr = ssh.exec_command("mca-ctrl -t dump-cfg > ~/config.gateway.json")
-    sftpClient.get("~" + USGFILE, CONTROLLERFILE)
+    stdin, stdout, stderr = ssh.exec_command("mca-ctrl -t dump-cfg > config.gateway.json")
+    sftpClient.get(USGFILE, CONTROLLERFILE)
     log.info("File copied from usg")
 else:
     raise Exception("RUNNING_ON variable is not set to USG or Controller")
