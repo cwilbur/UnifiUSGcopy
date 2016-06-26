@@ -40,9 +40,9 @@ try:
         sftpClient.put(os.path.realpath(os.path.dirname(__file__)) + USGFILE, CONTROLLERFILE)
         log.info("File copied to controller")
     elif RUNNING_ON.lower() == "controller":
-        ssh.connect(HOST, SSHPORT, USERNAME, PASSWORD)
+        ssh.connect(HOST, SSHPORT, username=USERNAME, password=PASSWORD)
         stdin, stdout, stderr = ssh.exec_command("mca-ctrl -t dump-cfg > config.gateway.json")
-        
+
         sftpClient.get(USGFILE, CONTROLLERFILE)
         log.info("File copied from usg")
     else:
