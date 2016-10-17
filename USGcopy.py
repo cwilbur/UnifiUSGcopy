@@ -1,9 +1,9 @@
 # Rick Mur - Maverick.Solutions - (c) 2016
-import paramiko
-import socket
 import logging
 import os
+import socket
 from subprocess import check_output
+import paramiko
 
 # Fill in variables for your environment
 HOST = "localhost"
